@@ -1,0 +1,7 @@
+/*  PL/SQL query to find the top 3 salaries of each department */
+With Result as
+(Select Department.Name as Department, Employee.Name as Employee, Salary, dense_rank() over (partition by Department.Name order by Salary desc) as rw
+from Employee inner join Department
+on Employee.DepartmentId = Department.Id) 
+
+select Department, Employee, Salary from Result where rw < 4 order by Department,Salary desc
