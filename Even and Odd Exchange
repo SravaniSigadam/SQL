@@ -1,0 +1,11 @@
+# To interchange the the names of even and odd id numbers
+
+select 
+(case 
+  when id%2 !=0 and (select count(*) from seat) != id then id+1
+  when id%2 !=0 and (select count(*) from seat) = id then id
+  else id-1
+ end) as id, student
+ from seat
+ order by id;
+ 
