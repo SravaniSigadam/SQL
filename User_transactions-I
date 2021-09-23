@@ -1,0 +1,40 @@
+This problem was asked by Stitch Fix.
+
+Assume you are given the below table on transactions from users. 
+Write a query to get the number of users and total products bought per latest transaction date where each user is bucketed into their latest transaction date.
+
+user_transactions
+
+column_name type
+transaction_id  integer
+product_id  integer
+user_id integer
+spend   float
+transaction_date datetime
+
+EX TABLE:
+transaction_id  product_id  user_id     spend   transaction_date
+1                1           123        100      22 Sep
+2                2           123        500      22 Sep
+3                1           123        100      21 Sep
+4                1           321        100      21 Sep  
+5                1           321        100      20 Sep
+
+CTE OUTPUT TABLE:
+user_id total_products
+123      2
+321      1
+
+Solution:
+
+WITH TRANSACTIONS AS 
+SELECT user_id, count(*) AS total_products
+FROM ( 
+SELECT *, RANK() OVER (PARTITION BY user_id ORDER BY transaction_date DESC) AS rank
+FROM user_transactions
+)
+WHERE rank = 1
+GROUP BY 1
+
+SELECT  count(*) as number_of_users, SUM(total_products) AS total_products
+FROM TRANSACTIONS
