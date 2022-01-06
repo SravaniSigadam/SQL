@@ -1,0 +1,17 @@
+-- Write a SQL query to find the first login date of all the players
+
+# Solution 1 
+
+SELECT player_id, MIN(event_date) AS first_activity
+FROM games 
+GROUP BY player_id
+
+# Solution 2 - Using CTE
+
+WITH sample AS 
+(SELECT *,
+RANK() OVER (PARTITION BY player_id ORDER BY event_date ASC) "Rank" 
+FROM games)
+SELECT player_id, event_date
+FROM sample
+WHERE "Rank" = 1;
