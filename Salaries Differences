@@ -1,0 +1,14 @@
+# StrataScrach
+# Write a query that calculates the difference between the highest salaries found in the marketing and engineering departments. 
+# Output just the absolute difference in salaries.
+
+WITH final AS
+(select department,max(salary) as maxSalary
+from
+(select a.*,b.department from db_employee a
+join db_dept b
+on a.department_id = b.id)x
+group by department)
+select abs(sum(case department when 'engineering' then +maxSalary
+when 'marketing' then -maxSalary end)) as difference
+from final 
