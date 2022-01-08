@@ -1,0 +1,38 @@
+# StrataScratch
+# Find the top three unique salaries for each department. Output the department name and the top 3 unique salaries by each department. 
+# Order your results alphabetically by department and then by highest salary to lowest.
+
+# Solution 1 - Using CTE
+WITH final
+     AS (SELECT department,
+                salary,
+                Rank() OVER(partition BY department ORDER BY salary DESC) AS ranks
+         FROM   twitter_employee
+         GROUP  BY department,
+                   salary
+         ORDER  BY 1,
+                   salary DESC)
+SELECT department,
+       salary
+FROM   final
+WHERE  ranks <= 3; 
+
+# Solution 2 -- SubQuery
+
+SELECT department,
+       salary
+FROM   (SELECT *,
+               Rank()
+                 OVER(
+                   partition BY department
+                   ORDER BY salary DESC) AS ranks
+        FROM   (SELECT department,
+                       salary
+                FROM   twitter_employee
+                GROUP  BY department,
+                          salary
+                ORDER  BY 1,
+                          salary DESC) a
+                            ORDER BY department,
+                                      salary) b
+WHERE  ranks < 4; 
