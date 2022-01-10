@@ -1,0 +1,21 @@
+# StrataScratch
+# Find the employee with the highest salary per department.
+# Output the department name, employee's first name along with the corresponding salary.
+
+# Subquery
+
+select department, first_name, salary
+from employee
+where (department, salary) in
+(select department, max(salary)
+from employee
+group by department);
+
+# Rank
+
+select department, first_name, salary
+from
+(select department, first_name, salary,
+DENSE_RANK() over (partition by department order by salary desc) as ranked
+from employee)a
+where ranked = 1;
