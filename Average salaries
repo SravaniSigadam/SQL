@@ -1,0 +1,18 @@
+# StrataScratch
+
+# Compare each employee's salary with the average salary of the corresponding department.
+# Output the department, first name, and salary of employees along with the average salary of that department.
+
+-- Subquery
+select department, first_name, salary, 
+avg(salary) OVER(partition by department) as avgSalary
+from employee
+
+-- Using CTE
+WITH avg_salary AS
+(select department, avg(salary) as avgSalary from employee
+group by department)
+select a.department, first_name, salary, avgSalary
+from avg_salary a
+inner join employee b
+on a.department = b.department;
