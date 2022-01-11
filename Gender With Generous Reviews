@@ -1,0 +1,12 @@
+# StrataScratch
+# Write a query to find which gender gives a higher average review score when writing reviews as guests. 
+# Use the `from_type` column to identify guest reviews. Output the gender and their average review score.
+
+select gender, avg(review_score) as average_review 
+from airbnb_reviews a
+left join airbnb_guests b
+on b.guest_id = a.from_user 
+where a.from_type = 'guest'
+group by gender
+order by 2 desc
+limit 1;
