@@ -1,0 +1,22 @@
+# StrataScratch
+# Find the date with the highest total energy consumption from the Meta/Facebook data centers. 
+# Output the date along with the total energy consumption across all data centers.
+
+SELECT date,
+       total_consumption
+FROM   (SELECT date,
+               Sum(consumption) AS total_consumption,
+               Dense_Rank()
+                 OVER(
+                   ORDER BY Sum(consumption) DESC) AS ranked
+        FROM   (SELECT *
+                FROM   fb_eu_energy
+                UNION ALL
+                SELECT *
+                FROM   fb_asia_energy
+                UNION ALL
+                SELECT *
+                FROM   fb_na_energy c
+                ORDER  BY date) a
+        GROUP  BY date) b
+WHERE  ranked = 1 
