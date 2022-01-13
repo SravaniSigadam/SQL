@@ -1,0 +1,27 @@
+# StrataScratch
+# Find "favorite" customers based on the order count and the total cost of orders.
+# A customer is considered as a favorite if he or she has placed more than 3 orders and with the total cost of orders more than $100.
+# Output the customer's first name, city, number of orders, and total cost of orders.
+
+
+SELECT customers.first_name AS name,
+       customers.city,
+       COUNT(orders.id) AS order_count,
+       SUM (total_order_cost) AS total_cost
+FROM orders
+INNER JOIN customers ON orders.cust_id = customers.id
+GROUP BY customers.id,
+         customers.first_name,
+         customers.city
+HAVING SUM (total_order_cost)>100
+AND COUNT(orders.id) > 3;
+
+select * from 
+(select a.first_name, a.city, count(a.id) as total_orders,
+ sum(total_order_cost) as total_cost 
+from customers a
+join orders b
+on a.id = b.cust_id
+group by 1,2)a
+where total_orders > 3
+and total_cost > 100;
