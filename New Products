@@ -1,0 +1,38 @@
+# StrataScratch
+
+# You are given a table of product launches by company by year. Write a query to count the net difference between the number of products companies 
+# launched in 2020 for the first time with the number of products companies launched in the previous year. 
+# Output the name of the companies and a net difference of net products released for 2020 compared to the previous year. 
+# If a company is new or had no products in 2019, then any product released in 2020 would be considered as new.
+
+
+with first_prod AS
+(select year,company_name, count(product_name) as count1
+from car_launches
+where year = 2019
+group by year, company_name),
+second_prod as
+(select year,company_name, count(product_name) as count2
+from car_launches
+where year = 2020
+group by year, company_name)
+select a.company_name, (count2 - count1) as net_products
+from first_prod a 
+full outer join second_prod b
+on a.company_name = b.company_name
+
+
+SELECT a.company_name,
+       (count(DISTINCT a.brand_2020)-count(DISTINCT b.brand_2019)) net_products
+FROM
+  (SELECT company_name,
+          product_name AS brand_2020
+   FROM car_launches
+   WHERE YEAR = 2020) a
+FULL OUTER JOIN
+  (SELECT company_name,
+          product_name AS brand_2019
+   FROM car_launches
+   WHERE YEAR = 2019) b ON a.company_name = b.company_name
+GROUP BY a.company_name
+ORDER BY company_name
