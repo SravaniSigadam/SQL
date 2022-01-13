@@ -1,0 +1,23 @@
+# StrataScratch
+#  The marketing department wants to launch a new promotion for the most successful product classes. What are the top 3 product classes by number of sales?
+
+select product_class
+from
+(select product_class, DENSE_RANK() over (order by count(*) desc) ranked 
+from facebook_products a
+join facebook_sales b
+on a.product_id = b.product_id
+group by 1) a
+where ranked < 4;
+
+
+WITH cte AS
+  (SELECT product_class,
+          rank() OVER (
+                       ORDER BY COUNT(*) DESC) rnk
+   FROM facebook_sales s
+   JOIN facebook_products p ON s.product_id = p.product_id
+   GROUP BY 1)
+SELECT product_class
+FROM cte
+WHERE rnk <= 3
