@@ -1,0 +1,18 @@
+# StrataScratch
+# Find the employee with the highest salary in each department. Output the department name, employee's first name, and the salary.
+
+SELECT 
+    t.department,
+    t.first_name,
+    t.salary
+FROM 
+    (SELECT 
+        max(salary) AS TotalSalary,
+        department 
+    FROM worker 
+    GROUP BY department) AS TempNew 
+INNER JOIN 
+    worker  t
+ON 
+    TempNew.department = t.department AND
+    TempNew.TotalSalary = t.salary
