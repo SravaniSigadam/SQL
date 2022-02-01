@@ -1,0 +1,13 @@
+# Find the number of orders, the number of customers, and the total cost of orders for each city. 
+# Only include cities that have made at least 5 orders and count all customers in each city even if they did not place an order.
+# Output each calculation along with the corresponding city name.
+
+SELECT a.city,
+       Count(b.id)           AS num_of_orders,
+       Count(DISTINCT a.id)  AS total_customers,
+       Sum(total_order_cost) AS total_cost
+FROM   customers a
+       LEFT JOIN orders b
+              ON a.id = b.cust_id
+GROUP  BY 1
+HAVING Count(b.id) > 5; 
