@@ -1,0 +1,23 @@
+# Find the number of male and female employees per department and also their corresponding total salaries.
+# Output department names along with the corresponding number of female employees, the total salary of female employees, 
+# the number of male employees, and the total salary of male employees.
+
+SELECT department,
+       COUNT(CASE
+                 WHEN sex = 'F' THEN id
+                 ELSE NULL
+             END) females,
+       SUM(CASE
+               WHEN sex = 'F' THEN salary
+               ELSE 0
+           END) fem_sal,
+       COUNT(CASE
+                 WHEN sex = 'M' THEN id
+                 ELSE NULL
+             END) males,
+       SUM(CASE
+               WHEN sex = 'M' THEN salary
+               ELSE 0
+           END) mal_sal
+FROM employee
+GROUP BY 1
