@@ -1,0 +1,9 @@
+# Find the duplicate records in the dataset.
+# Output the worker title, affected_from date, and the number of times the records were duplicated
+
+select * 
+from
+(select worker_title, affected_from, count(*) as num_duplicates
+from title
+group by 1,2)a
+where num_duplicates > 1;
