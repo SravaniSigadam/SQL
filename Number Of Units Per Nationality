@@ -1,0 +1,35 @@
+# Find the number of apartments per nationality that are owned by people under 30 years old.
+# Output the nationality along with the number of apartments.
+# Sort records by the apartments count in descending order.
+
+select nationality, count(distinct b.unit_id) as total_apts
+from airbnb_hosts a
+join airbnb_units b
+on a.host_id = b.host_id
+group by 1,a.age, b.unit_type
+having a.age < 30
+and b.unit_type = 'Apartment'
+order by 2 desc;
+
+# Solution 2
+
+with hosts AS (
+SELECT DISTINCT host_id,
+nationality
+FROM airbnb_hosts
+WHERE age < 30),
+
+units AS (
+SELECT DISTINCT host_id,
+unit_id
+FROM airbnb_units
+WHERE unit_type = 'Apartment')
+
+
+SELECT 
+h.nationality, 
+COUNT(u.unit_id)
+FROM hosts AS h
+INNER JOIN units AS u USING(host_id)
+GROUP BY 1
+ORDER BY 2 DESC
