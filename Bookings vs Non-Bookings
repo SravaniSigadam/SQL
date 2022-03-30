@@ -1,0 +1,31 @@
+# StrataScratch
+# Display the average number of times a user performed a search which led to a successful booking and the average number of times a user performed 
+# a search but did not lead to a booking. The output should have a column named action with values 'does not book' and 'books' as well as a 2nd 
+# column named average_searches with the average number of searches per action. 
+# Consider that the booking did not happen if the booking date is null. 
+# Be aware that search is connected to the booking only if their check-in dates match.
+
+# Solution 1
+with bookings as (
+    select id_user
+    , case when ts_booking_at is null
+        then  'does not book' 
+        else  'books'
+        end as action 
+    , n_searches
+    from airbnb_searches
+    left join airbnb_contacts
+    on id_user = id_guest
+    and airbnb_searches.ds_checkin = airbnb_contacts.ds_checkin
+)
+select distinct action ,avg(n_searches) as average_searches 
+from bookings
+group by action
+
+# Solution 2
+select case when ts_booking_at is null then 'does not book' else 'books' end as action,  avg(n_searches)
+    from airbnb_contacts a 
+    right join airbnb_searches b 
+    on a.id_guest = b.id_user 
+    and a.ds_checkin = b.ds_checkin
+    group by action
