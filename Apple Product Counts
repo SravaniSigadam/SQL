@@ -1,0 +1,37 @@
+# StrataScratch
+# Find the number of Apple product users and the number of total users with a device for each language. Assume Apple products are only MacBook-Pro, 
+# iPhone 5s, and iPad-air.  Output the language along with the total number of Apple users and users with any device. 
+# Order your results based on the number of total users in descending order.
+
+select language,count(distinct case when e.device in ('macbook pro', 'iphone 5s', 'ipad air') then u.user_id end) as n_apple_users,
+count(distinct u.user_id) as n_total_users
+from playbook_users u
+join playbook_events e on e.user_id = u.user_id
+group by 1
+order by 3 desc
+
+# Solution 2
+
+WITH cte AS (
+    SELECT e.user_id,
+            u.language,
+            CASE WHEN e.device IN ('macbook pro','iphone 5s','ipad air')
+                THEN 'apple'
+                ELSE 'other'
+                END AS apple_device
+    FROM playbook_events AS e
+    JOIN playbook_users AS u
+    ON e.user_id = u.user_id
+
+)
+
+SELECT language,
+       COUNT(DISTINCT 
+             CASE WHEN apple_device = 'apple'
+             THEN user_id
+             ELSE NULL
+             END) AS apple_users,
+       COUNT(DISTINCT user_id) AS total_users
+FROM cte
+GROUP BY 1
+ORDER BY 3 DESC
