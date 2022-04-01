@@ -1,0 +1,11 @@
+# StrataScratch
+
+# Find the year which had the highest number of players. Output the year along with the number of players.
+
+select *
+from 
+(select year, count(distinct name) as n_players
+from nfl_combine
+group by 1
+order by 2 desc) x
+limit 1;
