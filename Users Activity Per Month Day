@@ -1,0 +1,7 @@
+# StrataScratch
+# Return a distribution of users activity per day of the month
+
+select EXTRACT(DAY FROM post_date), count(post_id) 
+from facebook_posts
+group by 1 
+order by 1;
