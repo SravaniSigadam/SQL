@@ -1,0 +1,26 @@
+# StrataScratch
+# Find the most common reaction for day 1 by counting the number of occurrences for each reaction. 
+# Output the reaction alongside its number of occurrences.
+
+With aux_table As
+    (Select reaction, count(*) As reaction_count 
+     From facebook_reactions
+     Where date_day = 1
+     Group By reaction)
+     
+ Select reaction, reaction_count
+ From aux_table
+ Where reaction_count = (Select Max(reaction_count) From aux_table)
+ 
+ 
+ SELECT 
+    reaction,
+    n_occurences
+FROM (SELECT 
+        reaction,
+        count(*) as n_occurences,
+        DENSE_RANK() OVER(ORDER BY  count(*)  DESC) AS r
+    FROM  facebook_reactions
+    WHERE date_day = 1
+    GROUP BY reaction) a
+WHERE r=1
