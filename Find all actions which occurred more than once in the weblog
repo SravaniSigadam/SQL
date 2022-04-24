@@ -1,0 +1,13 @@
+# StrataScratch
+
+# Find all actions which occurred more than once in the weblog.
+
+select action 
+from
+(select action, count(*) as each_count from facebook_web_log
+group by 1) x
+where each_count > 1;
+
+select action from facebook_web_log
+group by 1
+having count(action) > 1;
