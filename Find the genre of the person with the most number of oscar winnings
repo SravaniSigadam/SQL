@@ -1,0 +1,15 @@
+# StrataScratch
+# Find the genre of the person with the most number of oscar winnings.
+# If there are more than one person with the same number of oscar wins, return the first one in alphabetic order based on their name. 
+# Use the names as keys when joining the tables.
+
+select distinct top_genre
+from
+(select a.nominee, b.top_genre, count(a.nominee)
+from oscar_nominees a
+join nominee_information b
+on a.nominee = b.name
+where a.winner = TRUE
+group by a.nominee,b.top_genre
+order by 3 desc,a.nominee)x
+limit 1;
